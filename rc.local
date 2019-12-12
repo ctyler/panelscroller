@@ -1,0 +1,10 @@
+#!/bin/bash
+#
+# rc.local
+#
+# Sample rc.local script to run panelscroller at
+# random intervals (10-100 seconds apart).
+
+(sleep 10;while true; do /usr/local/bin/panelscroller ; sleep $(( (RANDOM%100) + 10)) ; done)&
+
+exit 0

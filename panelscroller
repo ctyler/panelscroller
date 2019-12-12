@@ -1,0 +1,64 @@
+#!/usr/bin/python3
+#
+# Simple program to run on a Raspberry Pi
+# Zero W to scroll text on an 8x32 WS2812
+# RGB LED panel.
+#
+# To install required libraries:
+#   sudo pip3 install \
+#     rpi_ws281x adafruit-circuitpython-neopixel
+#
+# Chris Tyler 2019-12-12 - Licensed GPLv2
+
+import board
+import neopixel
+import os
+import time
+
+a=["##     ##  ########  ########   ########   ##    ##      ######   ##     ##  ########    ####   ######   ########  ##     ##     ###      ######  ",
+   "###   ###  ##        ##     ##  ##     ##   ##  ##      ##    ##  ##     ##  ##     ##    ##   ##    ##     ##     ###   ###    ## ##    ##    ## ",
+   "#### ####  ##        ##     ##  ##     ##    ####       ##        ##     ##  ##     ##    ##   ##           ##     #### ####   ##   ##   ##       ",
+   "## ### ##  ######    ########   ########      ##        ##        #########  ########     ##    ######      ##     ## ### ##  ##     ##   ######  ",
+   "##     ##  ##        ##   ##    ##   ##       ##        ##        ##     ##  ##   ##      ##         ##     ##     ##     ##  #########        ## ",
+   "##     ##  ##        ##    ##   ##    ##      ##        ##    ##  ##     ##  ##    ##     ##   ##    ##     ##     ##     ##  ##     ##  ##    ## ",
+   "##     ##  ########  ##     ##  ##     ##     ##         ######   ##     ##  ##     ##   ####   ######      ##     ##     ##  ##     ##   ######  ",
+   ""]
+
+for y in range(0,8):
+    a[y] = " "*32 + a[y]
+
+# The WS2812 grid is configured as a string of 256 elements,
+# but they are row-major and zigzag back and forth.
+# matrixmap[x][y] contains the number of the corresponding 
+# WS2812 element
+matrixmap = []
+for x in range(0,32):
+    matrixmap.append([])
+    for y in range(0,8):
+        p = y*32 + ( (x,31-x)[y%2] )
+        matrixmap[x].append(p)
+
+# Initialize the neopixel panel
+pixel = neopixel.NeoPixel(board.D18, 256, auto_write=False)
+
+# RGB colours for first and second word
+red1 = 0
+green1 = 255
+blue1 = 0
+
+red2 = 255
+green2 = 0
+blue2 = 0
+
+colour = [(0,255,0),(255,0,0)]
+
+for offset in range(0,len(a[0])+32):
+#    pixel.fill((0,0,0))
+    for y in range(0,8):
+            for x in range(0,32):
+                if (a[y][offset+x:offset+x+1]) == "#":
+                    pixel[matrixmap[x][y]] = colour[ offset+x>86 ]
+                else:
+                    pixel[matrixmap[x][y]]=(0,0,0)
+    pixel.show()
+
