@@ -15,6 +15,7 @@ import neopixel
 import os
 import time
 
+# The text to be displayed
 a=["##     ##  ########  ########   ########   ##    ##      ######   ##     ##  ########    ####   ######   ########  ##     ##     ###      ######  ",
    "###   ###  ##        ##     ##  ##     ##   ##  ##      ##    ##  ##     ##  ##     ##    ##   ##    ##     ##     ###   ###    ## ##    ##    ## ",
    "#### ####  ##        ##     ##  ##     ##    ####       ##        ##     ##  ##     ##    ##   ##           ##     #### ####   ##   ##   ##       ",
@@ -24,6 +25,8 @@ a=["##     ##  ########  ########   ########   ##    ##      ######   ##     ## 
    "##     ##  ########  ##     ##  ##     ##     ##         ######   ##     ##  ##     ##   ####   ######      ##     ##     ##  ##     ##   ######  ",
    ""]
 
+# Pad message with leading spaces so
+# that text enters from the right
 for y in range(0,8):
     a[y] = " "*32 + a[y]
 
@@ -42,23 +45,19 @@ for x in range(0,32):
 pixel = neopixel.NeoPixel(board.D18, 256, auto_write=False)
 
 # RGB colours for first and second word
-red1 = 0
-green1 = 255
-blue1 = 0
-
-red2 = 255
-green2 = 0
-blue2 = 0
-
+# Current draw is approximately 1+((R+B+G)/768*20) mA
+# per pixel at 5v
 colour = [(0,255,0),(255,0,0)]
 
+# Slide an offset across the message array
+# Draw a 32-pixel subset of the message
+# starting at the offset.
 for offset in range(0,len(a[0])+32):
-#    pixel.fill((0,0,0))
     for y in range(0,8):
             for x in range(0,32):
                 if (a[y][offset+x:offset+x+1]) == "#":
-                    pixel[matrixmap[x][y]] = colour[ offset+x>86 ]
+                    pixel[matrixmap[x][y]] = colour[offset+x>86]
                 else:
-                    pixel[matrixmap[x][y]]=(0,0,0)
+                    pixel[matrixmap[x][y]] = (0,0,0)
     pixel.show()
 
