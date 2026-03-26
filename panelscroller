@@ -45,7 +45,7 @@ for x in range(0,32):
 pixel = neopixel.NeoPixel(board.D18, 256, auto_write=False)
 
 # RGB colours for first and second word
-# Current draw is approximately 1+((R+B+G)/768*20) mA
+# Current draw is approximately 1+((R+B+G)/256*20) mA
 # per pixel at 5v
 colour = [(0,255,0),(255,0,0)]
 
